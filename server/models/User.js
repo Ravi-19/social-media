@@ -9,12 +9,42 @@ const userSchema = mongoose.Schema({
     } , 
     password:{
         type:String , 
-        required:true ,
+        required:true,
+        select : false  
     },
     name:{
         type:String , 
-        required:true , 
-    }
+        required:true 
+    } , 
+    avatar : {
+        // public id is unique id of that image 
+        publicId:String , 
+        // url will be url of that image which can be obtain from coludnary 
+        url:String 
+    }, 
+    followers : [
+        // array of object id 
+        {   // type will store id of that user 
+            type : mongoose.Schema.Types.ObjectId ,
+            // ref will refer to that user 
+            // this is how we relate two users or collections 
+            ref : 'user'
+        }
+    ] , 
+    followings:[
+         {// type will store id of that user 
+         type : mongoose.Schema.Types.ObjectId ,
+         // ref will refer to that user 
+         // this is how we relate two users or collections 
+         ref : 'user'}
+    ] , 
+    posts : [
+         {// type will store id of that user 
+            type : mongoose.Schema.Types.ObjectId ,
+            // ref will refer to that user 
+            // this is how we relate two users or collections 
+            ref : 'post'}
+    ]
 },{
     timeStamps:true 
 }) ; 
