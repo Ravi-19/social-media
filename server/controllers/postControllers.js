@@ -2,16 +2,16 @@ const Post = require("../models/Post");
 const User = require("../models/User") ; 
 const {success  , error} = require("../utils/responseWrapper") ; 
 
-const getAllPostController = async(req , res) =>{
+const getMyPostController = async(req , res) =>{
    // res.send("here is your all post ") ; 
    try {
     const owner = req._id ; 
     const user =await User.findById(owner) ; 
     
-    let postIdArr = user.posts ;
-    if(postIdArr.length <=0) {
-        return res.send(error(404 , "this user have not any post")) ; 
-    }
+    // let postIdArr = user.posts ;
+    // if(postIdArr.length <=0) {
+    //     return res.send(error(404 , "this user have not any post")) ; 
+    // }
    // console.log("befone map " ,  allPosts) ; 
     // allPosts.map(async(item) => {
     //     console.log("item " , item) ; 
@@ -19,13 +19,33 @@ const getAllPostController = async(req , res) =>{
     //     console.log("currPost " , currPost ) ;  
     //      return currPost ; 
     // })
-    const allPosts  = await fetchPost(postIdArr) ; 
-  //  console.log("after map " , allPosts) ; 
 
+   // const allPosts  = await fetchPost(postIdArr) ; 
+  //  console.log("after map " , allPosts) ; 
+    const allPosts = await Post.find({
+        owner:owner
+    }).populate('likes') ; 
     res.send(success(200 , {allPosts}))  ; 
    } catch (e) {
         res.send(error(500 , e.message)) ; 
    }
+}
+
+const getUserPost = async (req , res) => {
+    try {
+        const {userId} = req.body; 
+       // const user =await User.findById(owner) ; 
+       if(!userId) {
+        return res.send(error(404, "userId is required to fetch post")) ; 
+       }
+        const allPosts = await Post.find({
+            owner:userId
+        }).populate('likes') ; 
+        res.send(success(200 , {allPosts}))  ; 
+       } catch (e) {
+        console.log("error is " , e ) ; 
+            res.send(error(500 , e.message)) ; 
+       }
 }
 
 const createPostController = async (req , res) => {
@@ -85,6 +105,53 @@ const likeAndUnlikePostController = async (req , res) => {
     }
 }
 
+const updatePostController = async (req , res) => {
+    try {
+        const {postId , caption} = req.body ; 
+        const ownerId = req._id ; 
+        
+        const post = await Post.findById(postId) ;
+        if(!post) {
+            return res.send(error(404 , "post is not found")) ; 
+        } 
+        // onnly owner can update post 
+        if(post.owner.toString() !== ownerId) {
+            return res.send(error(403 , "only owner can update post")) ;  
+        }
+
+        post.caption = caption ; 
+        await post.save() ; 
+        return res.send(success(200 , {post})) ; 
+
+    } catch (e) {
+        return res.send(error(500 , e.message)) ; 
+    }
+}
+
+const deletePostController = async (req , res) => {
+    try {
+        const {postId} = req.body ;
+        const ownerId = req._id ;  
+        const post = await Post.findById(postId) ;
+        if(!post) {
+            return res.send(error(404 , "post is not found")) ; 
+        } 
+        // onnly owner can update post 
+        if(post.owner.toString() !== ownerId) {
+            return res.send(error(403 , "only owner can update post")) ;  
+        }
+        // delete post id from owner ;
+        const user = await User.findById(ownerId) ; 
+        const index = user.posts.indexOf(postId) ; 
+        user.posts.splice(index , 1) ; 
+        // not delete post
+        await user.save() ; 
+        await Post.deleteOne({_id:postId}) ; 
+        return res.send(success(200 , "post deleted successfully")) ;
+    } catch (e) {
+        return res.send(error(500 , e.message));
+    }
+}
 // internal function 
 const fetchPost = async (postIdArr) => {
         let ans =[]; 
@@ -96,7 +163,10 @@ const fetchPost = async (postIdArr) => {
 }
 
 module.exports = {
-    getAllPostController , 
+    getMyPostController , 
     createPostController , 
-    likeAndUnlikePostController
+    likeAndUnlikePostController , 
+    updatePostController , 
+    deletePostController ,
+    getUserPost 
 }

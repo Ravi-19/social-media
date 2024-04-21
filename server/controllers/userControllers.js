@@ -60,8 +60,6 @@ const getPostOfFollowingController = async (req , res) => {
     } catch (e) {
         res.send(error(500 ,e.message)) ; 
     } 
-
-
 }
 
 const getUserDataController = async (req,res) => {
@@ -77,9 +75,59 @@ const getUserDataController = async (req,res) => {
         return res.send(error(500 , e.message)) ; 
     }
 }
+// delete user 
+
+const deleteuserController = async (req , res) => {
+    try {
+        const userId  = req._id  ; 
+        const user  = await User.findById(userId) ; 
+        if(!user) {
+            return res.send(error(404 , "user is not found")) ; 
+        }
+        // remove this user from its followers account 
+        const followers = user.followers ; 
+        for (let  i = 0 ; i < followers.length ; i++) {
+            const currUser  = await User.findById(followers[i]) ; 
+            // delete id of user from follwing of currUser 
+            const index = currUser.followings.indexOf(userId) ; 
+            currUser.followings.splice(index , 1) ; 
+            await currUser.save() ; 
+        }
+        // remove this user from its followings 
+        const followings = user.followings ; 
+        for (let i = 0 ; i < followings.length ; i++) {
+            // delete id of user from follwers of currUser 
+            const currUser =  await User.findById(followings[i]) ; 
+            const index = currUser.followers.indexOf(userId) ; 
+            currUser.followers.splice(index , 1 ) ; 
+            await currUser.save() ; 
+        } 
+
+        // delete post of this user 
+        const posts = user.posts ; 
+        for (let i = 0 ; i < posts.length ; i++) {
+            const post = await Post.find({_id:posts[i]}) ; 
+            await Post.deleteOne({_id:post._id}) ; 
+        }
+        // delete cookie of this user also 
+        res.clearCookie('jwt' , {
+            httpOnly :true , 
+            secure : true 
+         }) ; 
+         //finally delete this user 
+        await User.deleteOne({_id:userId})
+        return res.send(success(200 , "user has been deleted successfully")) ; 
+        
+    } catch (e) {
+        return res.send(error(500 , e.message)) ; 
+    }
+}
+
+// internal function 
 
 module.exports  = {
     followUserController , 
     getUserDataController,
-    getPostOfFollowingController
+    getPostOfFollowingController , 
+    deleteuserController
 }
