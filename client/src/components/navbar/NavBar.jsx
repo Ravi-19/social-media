@@ -2,23 +2,27 @@ import './NavBar.scss'
 import Avatar from '../avatar/Avatar';
 import { useNavigate } from 'react-router-dom';
 import {LuLogOut} from 'react-icons/lu'  ;
-import { useDispatch, useSelector } from 'react-redux';
-import { setLoading } from '../../redux/slices/appConfigSlice';
+import { useDispatch, useSelector } from 'react-redux' ; 
 import { axiosClient } from '../../utils/axiosClient';
 import { KEY_ACCESS_TOKEN, removeItem } from '../../utils/localStorageManager';
+import {  TOAST_SUCCESS } from '../../App';
+import { showToast } from '../../redux/slices/appConfigSlice';
 
 function NavBar() {
   const navigate = useNavigate() ; 
- // const dispatch = useDispatch() ; 
-  const myProfile = useSelector(state => state.appConfigReducer.myProfile) ;  
+  const dispatch = useDispatch() ; 
+  const myProfile = useSelector(state => state.appConfigReducer.myProfile) ; 
   
   //console.log(myProfile?.user?._id) ; 
   async function handleLogout() {
-    const response = await axiosClient.post('/api/auth/logout') ; 
+    await axiosClient.post('/api/auth/logout') ; 
     removeItem(KEY_ACCESS_TOKEN) ; 
+    dispatch(showToast({
+      type:TOAST_SUCCESS , 
+      message :"succesfully logout , visit again ..."
+    })) ;
     navigate('/login') ; 
   }
-
   return (
     
     <div className='Navbar'>

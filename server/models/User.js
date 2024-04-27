@@ -49,7 +49,7 @@ const userSchema = mongoose.Schema({
             ref : 'post'}
     ]
 },{
-    timeStamps:true 
+    timestamps: true
 }) ; 
 
 module.exports = mongoose.model("user" , userSchema)

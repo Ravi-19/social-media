@@ -23,7 +23,6 @@ function Login() {
         // console.log(result) ;        
          navigate('/') ;      
       } catch (e) {
-          alert("unauthorized entry") ; 
          // console.log(e);
       }   
   }

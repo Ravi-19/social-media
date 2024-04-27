@@ -12,10 +12,14 @@ import Feed from './components/feed/Feed';
 import Profile from './components/profile/Profile';
 import UpdateProfile from './components/updateProfile/UpdateProfile';
 import AlreadyLoggedIn from './components/AlreadyLoggedIn';
+import toast, { Toaster } from 'react-hot-toast';
+export const TOAST_SUCCESS =  "taost_success" ; 
+export const TOAST_FAILURE =  "toast_failure" ; 
 
 function App() {
   const loadingRef = useRef(null);
   const isLoading = useSelector((state) => state.appConfigReducer.isLoading);
+  const toastData = useSelector((state) => state.appConfigReducer.toastData);
 
 
   useEffect(() => {
@@ -25,6 +29,18 @@ function App() {
       loadingRef.current?.complete();
     }
   }, [isLoading]);
+
+  
+  useEffect(() => {
+    switch(toastData.type) {
+      case TOAST_SUCCESS :
+        toast.success(toastData?.message) ; 
+        break ;  
+      case TOAST_FAILURE :
+        toast.error(toastData?.message) ;
+        break ;  
+    }
+  }, [toastData]);
   
 
 
@@ -32,6 +48,7 @@ function App() {
     <>
      <div className="App"> 
       <LoadingBar height={8} color="black" ref={loadingRef} />
+      <div><Toaster/></div>
       <Routes>
         <Route element={<RequireUser />}>
             <Route  element={<Home />}>

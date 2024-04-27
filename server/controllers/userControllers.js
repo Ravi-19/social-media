@@ -28,8 +28,7 @@ const followUserController = async (req , res) => {
 
             const i =  userToFollow.followers.indexOf(ownerId) ; 
             userToFollow.followers.splice(i , 1) ; 
-            await userToFollow.save() ;  
-            return res.send(success(200 , "unfollowed successfully")) ; 
+            await userToFollow.save() ;     
         }
         else {
             // curr user still not followed this guy , so follow it 
@@ -38,8 +37,8 @@ const followUserController = async (req , res) => {
             // also add curr user to followers of user to folloe 
             userToFollow.followers.push(ownerId) ; 
             await userToFollow.save() ; 
-            return res.send(success(200 , "followed successfully")) ; 
         }
+        return res.send(success(200 , {userToFollow})) ; 
 
     } catch (e) {
         return res.send(error(500 , e.message)) ; 
@@ -49,18 +48,29 @@ const followUserController = async (req , res) => {
 const getPostOfFollowingController = async (req , res) => {
     try {
         const ownerId = req._id ; 
-        const currUser = await User.findById(ownerId) ; 
+        const currUser = await User.findById(ownerId).populate('followings') ; 
         const followings = currUser.followings ; 
     
-        const posts = await Post.find({
-            'owner' : {
+        const fullPosts = await Post.find({
+            owner : {
                 '$in' : followings 
             }
-        }) ; 
-        return res.send(success(200 , {posts})) ;
+        }).populate('owner') ;
+        
+        const posts = fullPosts.map(item => mapPostOutput(item , req._iq)).reverse() ; 
+        const followingsIds = currUser.followings.map(item=> item._id) ;
+        // you can not be suggestion for you 
+        followingsIds.push(req._id) ;  
+        const suggestions = await User.find({
+            _id:{
+                $nin : followingsIds
+            }
+        }) ;
+        return res.send(success(200 , {...currUser._doc ,suggestions , posts })) ;
         
     } catch (e) {
         res.send(error(500 ,e.message)) ; 
+        
     } 
 }
 

@@ -1,5 +1,5 @@
 import './UpdateProfile.scss' ; 
-////import userImg from '../../assets/user.png'
+import dummyImg from '../../assets/user.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -47,7 +47,7 @@ function UpdateProfile() {
             <div className='leftPart'>
                 {/* <img className='userImg' src={userImg} alt='userImg'/> */}
                 <div className="inputUserImg">
-                    <label htmlFor="inputImg"  className="labelImg"><img className='userImg' src={userImg? userImg : userImg} alt='userImg'/>
+                    <label htmlFor="inputImg"  className="labelImg"><img className='userImg' src={userImg? userImg : dummyImg} alt='userImg'/>
                     </label>
                     <input id='inputImg' className='inputImg' type="file" accept='image/*' onChange={handleImgChange}/>
                 </div>

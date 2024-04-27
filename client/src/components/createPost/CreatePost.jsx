@@ -1,6 +1,7 @@
 import './CreatePost.scss'
 import Avatar from './../avatar/Avatar';
 import {BsCardImage} from 'react-icons/bs' ; 
+import userImg from '../../assets/user.png'
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {axiosClient} from '../../utils/axiosClient' ; 
@@ -48,7 +49,7 @@ function CreatePost() {
   return (
     <div className='CreatePost'>
         <div className="createPostLeftPart">
-            <Avatar src={myProfile?.user?.avatar?.url}/>
+            <Avatar src={myProfile?.user?.avatar?.url }/>
         </div>
         <div className="createPostrightPart">
             <input  type='text' className='captionInput' placeholder='input your caption ...'

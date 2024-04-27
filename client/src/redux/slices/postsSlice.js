@@ -33,6 +33,8 @@ export const likeAndUnlike = createAsyncThunk('user/likeAndUnlike' , async(body 
     }
 })
 
+
+
 const postSlice = createSlice({
     name :'postSlice' , 
     initialState: {
@@ -44,8 +46,9 @@ const postSlice = createSlice({
         })
         .addCase(likeAndUnlike.fulfilled , (state , action) =>{
             const post = action.payload ;
-            const index = state.userProfile.posts.findIndex(item => item._id ===post._id) ; 
-            if(index !=-1) {
+          //  console.log(post) ; 
+            const index = state?.userProfile?.posts?.findIndex(item => item._id ===post._id) ; 
+            if(index !=undefined && index !=-1) {
                 state.userProfile.posts[index] = post ; 
             } 
         })

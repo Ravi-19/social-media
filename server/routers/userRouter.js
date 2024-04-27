@@ -9,7 +9,7 @@ const userControllers = require ('../controllers/userControllers') ;
 router.post('/follow' , RequireUser ,userControllers.followUserController ) ;
 router.post('/getUserProfile' , RequireUser ,userControllers.getUserDataController ) ;
 router.get('/getMyInfo' , RequireUser ,userControllers.getMyInfoController ) ;
-router.get('/getPostsOfFollwings', RequireUser ,userControllers.getPostOfFollowingController) ;
+router.get('/getFeedData', RequireUser ,userControllers.getPostOfFollowingController) ;
 router.delete('/' , RequireUser , userControllers.deleteuserController ) ; 
 router.put('/' , RequireUser , userControllers.updateUserController) ; 
 
