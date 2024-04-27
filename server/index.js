@@ -5,12 +5,13 @@ const morgan = require('morgan') ;
 const mainRouter = require('./routers/index') ; 
 const cookieParser = require('cookie-parser') ; 
 const cors = require ('cors');
+const cloudinaryConnect = require('./cloudinary/cloudinaryConnect') ; 
 
 dotenv.config('./.env') ; 
 const app = express() ; 
 
 // middleware 
-app.use(express.json()) ; 
+app.use(express.json({limit:'20mb'})) ; 
 app.use(morgan())  ;
 app.use(cookieParser()) ; 
 app.use(cors({
@@ -18,6 +19,7 @@ app.use(cors({
     origin:'http://localhost:5173'
 }) )  ; 
 
+cloudinaryConnect() ; 
 
 //this api testing purpose 
 app.get('/' , (req , res) => {

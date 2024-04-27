@@ -1,0 +1,31 @@
+.Feed{
+    .container{
+        display: flex;
+        gap: 20px;
+        overflow: hidden;
+        height: 100vh;
+        
+        
+        .leftPart{
+            flex: 2;
+            overflow: auto;
+           
+           
+        }
+        .rightPart{
+            margin-top: 10px ; 
+            flex: 1;
+            
+        }
+
+        .title{
+            margin-bottom: 12px;
+        }
+        .suggestions{
+            margin-top: 30px;
+        }
+
+        
+    }
+
+}

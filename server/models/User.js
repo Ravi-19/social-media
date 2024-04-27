@@ -16,6 +16,9 @@ const userSchema = mongoose.Schema({
         type:String , 
         required:true 
     } , 
+    bio: {
+        type:String 
+    } ,
     avatar : {
         // public id is unique id of that image 
         publicId:String , 

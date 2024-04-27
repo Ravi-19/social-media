@@ -1,6 +1,8 @@
 const Post = require('../models/Post');
 const User = require('../models/User') ; 
 const {error , success} = require ('../utils/responseWrapper') ; 
+const mapPostOutput = require('../utils/utils');
+const cloudinary = require('cloudinary').v2 ; 
 
 const followUserController = async (req , res) => {
     try {
@@ -64,13 +66,37 @@ const getPostOfFollowingController = async (req , res) => {
 
 const getUserDataController = async (req,res) => {
     try {
-        const ownerId = req._id ; 
-        const user  = await User.findById(ownerId)  ; 
+        const {userId} = req.body ; 
+        if(!userId) {
+            return res.send(error(404 , "user id is required")) ; 
+        }
+        const user  = await User.findById(userId).populate({
+            path:"posts",
+            populate:{
+                path:"owner" 
+            }
+        }) ; 
         if(!user) {
             return res.send(error(404 , "user not found")) ; 
-        }else {
-            return res.send(success(200 , {user})) ; 
         }
+
+        const fullPosts = user.posts ; 
+
+        const posts = fullPosts.map(item => mapPostOutput(item , req._id)).reverse() ;
+        
+        return res.send(success(200 , {...user._doc , posts})) ; 
+
+        
+
+    } catch (e) {
+        console.log("server error under user get user data cotroller " , e) ; 
+        return res.send(error(500 , e.message)) ; 
+    }
+}
+const getMyInfoController = async (req , res) => {
+    try {
+        const user = await User.findById(req._id) ; 
+        return res.send(success(200 , {user})) ; 
     } catch (e) {
         return res.send(error(500 , e.message)) ; 
     }
@@ -135,11 +161,46 @@ const deleteuserController = async (req , res) => {
     }
 }
 
+
+const updateUserController = async (req , res) => {
+    try {
+    const userId = req._id ; 
+    const user = await User.findById(userId) ; 
+    const {name , bio , userImg} = req.body ; 
+    //  console.log(user) ;
+    if(name) {
+        user.name = name ; 
+    } 
+    if(bio) {
+        user.bio = bio ; 
+    }
+    if(userImg) {
+        const cloudImg =await cloudinary.uploader.upload(userImg , {
+                folder:'socialMedia/profileImage'
+        })
+        user.avatar = {
+            publicId :cloudImg.public_id , 
+            url : cloudImg.secure_url
+        }
+    }
+    await user.save() ; 
+    return res.send(success(200 , {user})) ; 
+
+    } catch (e) {
+
+        console.log("error : " , e) ; 
+        return res.send(error(500 , e.message)); 
+
+    }
+
+}
 // internal function 
 
 module.exports  = {
     followUserController , 
     getUserDataController,
     getPostOfFollowingController , 
-    deleteuserController
+    deleteuserController , 
+    getMyInfoController,
+    updateUserController
 }

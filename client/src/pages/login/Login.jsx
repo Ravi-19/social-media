@@ -18,12 +18,13 @@ function Login() {
               email,
               password
           }) ; 
-          setItem(KEY_ACCESS_TOKEN , result.data.result.accessToken) ;
-         console.log(result) ;        
+         setItem(KEY_ACCESS_TOKEN , result.result.accessToken) ;
+        // console.log("acees to "  , result.result.accessToken) ; 
+        // console.log(result) ;        
          navigate('/') ;      
       } catch (e) {
           alert("unauthorized entry") ; 
-          console.log(e);
+         // console.log(e);
       }   
   }
   return (
