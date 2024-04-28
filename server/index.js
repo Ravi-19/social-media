@@ -10,13 +10,15 @@ const cloudinaryConnect = require('./cloudinary/cloudinaryConnect') ;
 dotenv.config('./.env') ; 
 const app = express() ; 
 
+const origin = process.env.CORS_ORIGIN;
+
 // middleware 
 app.use(express.json({limit:'20mb'})) ; 
 app.use(morgan())  ;
 app.use(cookieParser()) ; 
 app.use(cors({
     credentials:true , 
-    origin:'http://localhost:5173'
+    origin
 }) )  ; 
 
 cloudinaryConnect() ; 
