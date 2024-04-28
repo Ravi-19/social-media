@@ -47,7 +47,7 @@ function App() {
   return (
     <>
      <div className="App"> 
-      <LoadingBar height={8} color="black" ref={loadingRef} />
+      <LoadingBar height={4} color="#458eff" ref={loadingRef} />
       <div><Toaster/></div>
       <Routes>
         <Route element={<RequireUser />}>

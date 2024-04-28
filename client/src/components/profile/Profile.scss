@@ -3,7 +3,7 @@
     .container{
         display: flex;
         gap: 20px;
-       overflow: hidden;
+        overflow: hidden;
         height: 100vh;
 
     
@@ -50,4 +50,14 @@
     }
 
 
+}
+
+@media only screen and (max-width:600px) {
+    .Profile{
+        padding-inline: 10px;
+        .container{
+
+            flex-direction: column-reverse;
+        }
+    }
 }

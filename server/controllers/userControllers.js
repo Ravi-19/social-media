@@ -142,8 +142,8 @@ const deleteuserController = async (req , res) => {
         // delete post of this user 
         const posts = user.posts ; 
         for (let i = 0 ; i < posts.length ; i++) {
-            const post = await Post.find({_id:posts[i]}) ; 
-            await Post.deleteOne({_id:post._id}) ; 
+          //  const post = await Post.find({_id:posts[i]}) ; 
+            await Post.deleteOne({_id:posts[i]}) ; 
         }
         // delete my self from likes of every post 
         ///post which are liked by me , removed my self from them 
@@ -156,7 +156,7 @@ const deleteuserController = async (req , res) => {
                 await post.save() ;  
             }
         }
-        await allPost.save() ; 
+       // await allPost.save() ; 
         // delete cookie of this user also 
         res.clearCookie('jwt' , {
             httpOnly :true , 

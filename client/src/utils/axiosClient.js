@@ -2,8 +2,8 @@ import axios from "axios";
 import { KEY_ACCESS_TOKEN, getItem, removeItem, setItem } from "./localStorageManager";
 const base = import.meta.env.VITE_REACT_APP_SERVER_BASE_URL  ; 
 import store from '../redux/store'
-import { showToast } from "../redux/slices/appConfigSlice";
-import { TOAST_FAILURE } from "../App";
+import {  showToast } from "../redux/slices/appConfigSlice";
+import { TOAST_FAILURE} from "../App";
 
 export const axiosClient = axios.create({
     baseURL:base ,
@@ -28,7 +28,6 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   async (response) => {
     const data = response.data;
-
     if (data.status === "ok") {
       //everything is fine
       return data;
@@ -36,6 +35,15 @@ axiosClient.interceptors.response.use(
     const originalRequest = response.config;
     const statusCode = data.statusCode;
     const error = data.message;
+
+    if(error === "refresh token is requird from coookies "){
+      store.dispatch(showToast({
+        type:TOAST_FAILURE , 
+        message :error
+      })) ; 
+      window.location.replace("/login", "_self");
+      return Promise.reject(error);
+    }
 
     if (statusCode === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -50,10 +58,15 @@ axiosClient.interceptors.response.use(
       //   console.log(response) ;
       if (response.data.status === "ok") {
         setItem(KEY_ACCESS_TOKEN, response.data.result.accessToken);
-        originalRequest.headers[
+         originalRequest.headers[
           "Authorization"
         ] = `Bearer ${response.data.result.accessToken}`;
         console.log("refresh api called") ; 
+       // console.log("original request" , originalRequest) ; 
+      //  store.dispatch(showToast({
+      //   type:TOAST_SUCCESS , 
+      //   message :"please refresh the page"
+      // })) ; 
         return axios(originalRequest);
       } else {
         // it means user ko 1 ssall ho gya
@@ -77,6 +90,7 @@ axiosClient.interceptors.response.use(
       type:TOAST_FAILURE , 
       message :e
     })) ;
+    window.location.replace("/login", "_self");
     return Promise.reject(e); 
    }
 );

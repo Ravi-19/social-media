@@ -14,7 +14,7 @@ export const getUserProfile = createAsyncThunk('user/getUserProfile' , async(bod
       //  console.log("error is :" , error) ; 
         return Promise.reject(error)  ;
     }finally{
-        thunkAPI.dispatch(setLoading(false)) ; 
+       thunkAPI.dispatch(setLoading(false)) ; 
     }
 })
 

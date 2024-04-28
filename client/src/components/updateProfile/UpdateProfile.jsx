@@ -3,7 +3,11 @@ import dummyImg from '../../assets/user.png'
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { updateMyProfile } from '../../redux/slices/appConfigSlice';
+import { setLoading, showToast, updateMyProfile } from '../../redux/slices/appConfigSlice';
+import { axiosClient } from '../../utils/axiosClient';
+import { TOAST_FAILURE, TOAST_SUCCESS } from '../../App';
+import { useNavigate } from 'react-router-dom';
+import { KEY_ACCESS_TOKEN, removeItem } from '../../utils/localStorageManager';
 
 function UpdateProfile() {
     const myProfile = useSelector(state => state.appConfigReducer.myProfile) ; 
@@ -11,6 +15,7 @@ function UpdateProfile() {
     const [bio , setBio] = useState("") ; 
     const [userImg , setImage] = useState('') ; 
     const dispatch = useDispatch() ; 
+    const navigate = useNavigate() ; 
 
     useEffect(()=> {
            setName(myProfile?.user?.name || '') ;
@@ -41,6 +46,38 @@ function UpdateProfile() {
         ))
         
     }
+
+    async function handleDelete() {
+        try {
+            const choice = prompt("type yes to delete , otherwise no ") ; 
+            if(choice === "yes") {
+                dispatch(setLoading(true));
+                    await axiosClient.delete('/api/user') ; 
+                    dispatch(showToast({
+                    type:TOAST_SUCCESS , 
+                    message :"user has been deleted successfully"
+                })) ;
+                removeItem(KEY_ACCESS_TOKEN) ; 
+                navigate('/login')  ;
+            }
+            else {
+                dispatch(showToast({
+                    type:TOAST_SUCCESS , 
+                    message :"ooppss you saved" 
+                })) ;
+            }
+            
+
+        } catch (error) {
+            dispatch(showToast({
+                type:TOAST_FAILURE , 
+                message :error
+              })) ;
+        }finally{
+            dispatch(setLoading(false));
+        }
+        
+    }
   return (
     <div className='UpdateProfile'>
         <div className='container'>
@@ -58,7 +95,7 @@ function UpdateProfile() {
                     <input value={bio } type='text' placeholder='Your bio' onChange={(e)=> setBio(e.target.value)}/>
                     <input type='submit'  className='btn-primary submit'  onClick={handleSubmit}/>
                 </form>
-                <button className='btn-primary deleteAccount'>Delete Account</button>
+                <button onClick={handleDelete} className='btn-primary deleteAccount'>Delete Account</button>
             </div>
         </div>
     </div>

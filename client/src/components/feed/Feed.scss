@@ -15,20 +15,23 @@
         .rightPart{
             margin-top: 10px ; 
             flex: 1;
-            
         }
 
         .title{
-            margin-block: 12px;
+            margin-top: 12px;
         }
         .followings{
             display: flex;
            flex-direction: column;
+           border: 1px solid var(--border-color);
+           padding: 15px;
            gap: 10px;
         }
         .suggestions{
-           display: flex;
+            display: flex;
            flex-direction: column;
+           border: 1px solid var(--border-color);
+           padding: 15px;
            gap: 10px;
 
         }
@@ -36,4 +39,17 @@
         
     }
 
+}
+@media only screen and (max-width:600px) {
+    .Feed {
+        padding-inline: 5px;
+        .container {
+            flex-direction: column;
+            .rightPart{
+                width: 100vw;
+            }
+    
+        }
+    }
+    
 }

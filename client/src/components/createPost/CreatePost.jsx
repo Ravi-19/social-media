@@ -1,7 +1,6 @@
 import './CreatePost.scss'
 import Avatar from './../avatar/Avatar';
 import {BsCardImage} from 'react-icons/bs' ; 
-import userImg from '../../assets/user.png'
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {axiosClient} from '../../utils/axiosClient' ; 
@@ -30,16 +29,16 @@ function CreatePost() {
     const handlePostsubmit = async()=> {
         try {
             dispatch(setLoading(true)) ; 
-            const post = await axiosClient.post('/api/post' , {
+             await axiosClient.post('/api/post' , {
                 caption,
                 postImg
             })
 
-            console.log("post data" , post) ; 
+           // console.log("post data" , post) ; 
             dispatch(getUserProfile({userId:myProfile?.user?._id})) ; 
 
         } catch (e) {
-            console.log("post submit handle error" , e) ; 
+         //  console.log("post submit handle error" , e) ; 
         }finally{
             dispatch(setLoading(false)) ; 
             setCaption('') ; 

@@ -23,7 +23,7 @@ cloudinaryConnect() ;
 
 //this api testing purpose 
 app.get('/' , (req , res) => {
-    res.status(200).send("server is working well , this is home page "); 
+    res.status(200).send("server is working well"); 
 })
 
 app.use('/api' , mainRouter)  ; 

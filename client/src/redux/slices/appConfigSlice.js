@@ -22,9 +22,8 @@ export const getMyInfo = createAsyncThunk('user/getMyInfo' , async(body , thunkA
 
 export const updateMyProfile = createAsyncThunk ("/user/updateMyProfile" , async(body , thunkAPI)=> {
     try {
-        thunkAPI.dispatch(setLoading(true)) ; 
+       thunkAPI.dispatch(setLoading(true)) ; 
        // console.log("fine") ; 
-       console.log("body inside thunk " , body) ; 
         const  response  = await axiosClient.put('/api/user/' , body) ; 
      //  console.log("api called data " , response.result) ; 
        
