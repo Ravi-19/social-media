@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosClient } from '../../utils/axiosClient';
+import { TOAST_FAILURE } from "../../App";
+import { KEY_ACCESS_TOKEN, removeItem } from "../../utils/localStorageManager";
 
 
 export const getMyInfo = createAsyncThunk('user/getMyInfo' , async(body , thunkAPI) =>{
@@ -12,6 +14,12 @@ export const getMyInfo = createAsyncThunk('user/getMyInfo' , async(body , thunkA
        return response.result ; 
         
     } catch (error) {
+        thunkAPI.dispatch(showToast({
+            type:TOAST_FAILURE , 
+            message :error.data.message
+          })) ; 
+        removeItem(KEY_ACCESS_TOKEN);
+        window.location.replace("/login", "_self");
         console.log("error is :" , error) ; 
         return Promise.reject(error)  ;
     }finally{
@@ -31,6 +39,12 @@ export const updateMyProfile = createAsyncThunk ("/user/updateMyProfile" , async
         
     } catch (error) {
         console.log("error is :" , error) ; 
+        thunkAPI.dispatch(showToast({
+            type:TOAST_FAILURE , 
+            message :error.data.message
+          })) ; 
+        removeItem(KEY_ACCESS_TOKEN);
+        window.location.replace("/login", "_self");
         return Promise.reject(error)  ;
     }finally{
         

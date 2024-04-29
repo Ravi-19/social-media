@@ -3,6 +3,8 @@ import { Link,  useNavigate } from 'react-router-dom';
 import { axiosClient } from '../../utils/axiosClient';
 import { KEY_ACCESS_TOKEN, setItem } from '../../utils/localStorageManager';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setLoading } from '../../redux/slices/appConfigSlice';
 
 
 function Login() {
@@ -10,10 +12,12 @@ function Login() {
    const [email , setEmail] = useState('') ; 
    const [password , setPassword] = useState('') ; 
    const navigate = useNavigate() ; 
+   const dispatch = useDispatch() ; 
 
  async function handleSubmit(e) {
       e.preventDefault() ;
       try {
+          dispatch(setLoading(true)) ; 
           const result = await axiosClient.post('/api/auth/login' , {
               email,
               password
@@ -25,6 +29,9 @@ function Login() {
       } catch (e) {
          // console.log(e);
       }   
+      finally{
+        dispatch(setLoading(false)) ; 
+      }
   }
   return (
     <div className='Login'>

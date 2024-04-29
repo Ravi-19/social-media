@@ -5,8 +5,7 @@
         gap: 20px;
         overflow: hidden;
         height: 100vh;
-
-    
+        
         .leftPart{
             flex: 2;
             overflow-y: auto;
@@ -56,7 +55,8 @@
     .Profile{
         padding-inline: 10px;
         .container{
-
+            overflow: auto;
+            height: auto;
             flex-direction: column-reverse;
         }
     }
